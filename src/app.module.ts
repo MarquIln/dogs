@@ -1,12 +1,17 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { DogModule } from './dog/dog.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { CloudflareModule } from './cloudflare/cloudflare.module'
+import { MulterModule } from '@nestjs/platform-express'
+import { ConfigModule } from '@nestjs/config'
+import { DogsModule } from './dogs/dogs.module'
 
 @Module({
   imports: [
-    DogModule,
+    CloudflareModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -18,8 +23,8 @@ import { TypeOrmModule } from '@nestjs/typeorm'
       synchronize: true,
       autoLoadEntities: true,
     }),
+    DogsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
